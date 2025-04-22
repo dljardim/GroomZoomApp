@@ -27,6 +27,46 @@ class BookingViewModel: ObservableObject {
     @Published var userAddress: String = ""
     @Published var userNotes: String = ""
     
+    @Published var bookings: [Booking] = [] {
+        didSet{
+            saveBookings()
+        }
+    }
+    
+    func confirmAndSaveBooking(){
+        let booking = Booking(
+            id: UUID(),
+            serviceName: selectedService?.name ?? "",
+            date: selectedDate ?? Date(),
+            time: selectedTime ?? "",
+            userName: userName,
+            userPhone: userPhone,
+            userAddress: userAddress,
+            userNotes: userNotes
+        )
+        bookings.append(booking)
+    }
+    
+    func cancelBooking(_ booking: Booking){
+        bookings.removeAll(){
+            $0.id == booking.id
+        }
+    }
+    
+    private func saveBookings(){
+        if let encoded = try? JSONEncoder().encode(bookings){
+            UserDefaults.standard.set(encoded, forKey: "bookings")
+        }
+    }
+    
+    private func loadBookings(){
+        if let data = UserDefaults.standard.data(forKey: "bookings"),
+           let decoded = try? JSONDecoder().decode([Booking].self, from:data){
+            bookings = decoded
+        }
+    }
+    
+    
     func submitAppointment() {
         // Save or send to backend
         print("Submitted appointment for \(userName) and \(petName)")

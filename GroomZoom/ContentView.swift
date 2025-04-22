@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject private var viewModel = BookingViewModel()
+
     var body: some View {
         VStack {
-            HomeView()
+            HomeView(viewModel: viewModel)
+//                .environmentObject(viewModel)
         }
         .padding()
     }

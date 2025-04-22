@@ -18,6 +18,25 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    @ObservedObject var viewModel: BookingViewModel
+    
+    @State private var imageFromWeb:Image? = nil
+
+    func loadImageFromWeb() async {
+        let url = URL(string: "https://via.placeholder.com/150")!
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            if let uiImage = UIImage(data: data) {
+                let swiftUIImage = Image(uiImage: uiImage)
+                imageFromWeb = swiftUIImage
+            }
+        } catch {
+            print("❌ Failed to load image: \(error)")
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 40) {
@@ -35,6 +54,14 @@ struct HomeView: View {
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                
+                NavigationLink(destination: BookingHistoryView(viewModel: viewModel)) {
+                    Text("View My Appointments")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.blue.opacity(0.2))
+                        .cornerRadius(10)
+                }
                 
                 // CTA Button
                 NavigationLink(destination: ServiceListView()) {
@@ -55,5 +82,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(viewModel: BookingViewModel())
 }

@@ -43,7 +43,7 @@ struct ConfirmationView: View {
             
             Spacer()
             
-            NavigationLink(destination: HomeView()) {
+            NavigationLink(destination: HomeView(viewModel:viewModel)) {
                 Text("Back to Home")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
